@@ -1,0 +1,69 @@
+# Complete Python program for the design of a stainless steel screw
+
+import math
+
+# Constants for stainless steel (example values)
+ULTIMATE_TENSILE_STRENGTH = 515  # MPa for stainless steel AISI 304
+YIELD_STRENGTH = 215  # MPa for stainless steel AISI 304
+SHEAR_STRENGTH_RATIO = 0.6  # Approximate ratio to tensile strength
+
+# Conversion factors
+MPA_TO_N_MM2 = 1.0  # 1 MPa = 1 N/mm^2
+
+def compute_thread_dimensions(diameter):
+    """
+    Compute the major, minor, and pitch diameters for a standard metric thread.
+    """
+    pitch = 1.5  # Assume a coarse thread pitch for simplicity
+    depth_of_thread = 0.61343 * pitch  # Approximate depth for metric thread
+    major_diameter = diameter
+    minor_diameter = major_diameter - (2 * depth_of_thread)
+    pitch_diameter = major_diameter - depth_of_thread
+    
+    return {
+        'major_diameter': major_diameter,
+        'minor_diameter': minor_diameter,
+        'pitch_diameter': pitch_diameter,
+        'pitch': pitch
+    }
+
+def tensile_strength(diameter, ultimate_tensile_strength):
+    """
+    Calculate the tensile strength of the screw.
+    """
+    # Tensile stress area for threads (approximation)
+    tensile_stress_area = (math.pi / 4) * (diameter ** 2)
+    return tensile_stress_area * ultimate_tensile_strength * MPA_TO_N_MM2
+
+def shear_strength(diameter, yield_strength, shear_strength_ratio):
+    """
+    Calculate the shear strength of the screw.
+    """
+    # Shear area (approximation for single shear)
+    shear_area = (math.pi / 4) * (diameter ** 2) * shear_strength_ratio
+    return shear_area * yield_strength * MPA_TO_N_MM2
+
+def main():
+    # Input diameter from user
+    diameter = float(input("Enter the nominal diameter of the screw (in mm): "))
+    
+    # Compute thread dimensions
+    thread_dimensions = compute_thread_dimensions(diameter)
+    print("\nThread Dimensions:")
+    print(f"Major Diameter: {thread_dimensions['major_diameter']} mm")
+    print(f"Minor Diameter: {thread_dimensions['minor_diameter']} mm")
+    print(f"Pitch Diameter: {thread_dimensions['pitch_diameter']} mm")
+    print(f"Pitch: {thread_dimensions['pitch']} mm")
+    
+    # Compute tensile strength
+    tensile_strength_value = tensile_strength(diameter, ULTIMATE_TENSILE_STRENGTH)
+    print("\nTensile Strength:")
+    print(f"Tensile Strength: {tensile_strength_value:.2f} N")
+    
+    # Compute shear strength
+    shear_strength_value = shear_strength(diameter, YIELD_STRENGTH, SHEAR_STRENGTH_RATIO)
+    print("\nShear Strength:")
+    print(f"Shear Strength: {shear_strength_value:.2f} N")
+
+if __name__ == "__main__":
+    main()
